@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="sn.esp.dgi.m2.glsi.sentasks" version="1.0.0"
+  xmlns="http://www.w3.org/ns/widgets"
+  xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>SenTasks</name>
+  <description>Application Todo List Mobile</description>
+  <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
+    Ton Nom
+  </author>
+  <content src="index.html" />
+  <allow-intent href="http://*/*" />
+  <allow-intent href="https://*/*" />
+  <preference name="AndroidPersistentFileLocation" value="Internal" />
+</widget>
