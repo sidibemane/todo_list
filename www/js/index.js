@@ -1,12 +1,3 @@
-document.addEventListener('deviceready', onDeviceReady, false);
-
-function onDeviceReady() {
-  init();
-}
-
-// Si tu testes dans le navigateur (sans Cordova), décommente la ligne suivante :
-// window.addEventListener('load', init);
-
 let tasks = [];
 let currentFilter = 'all';
 
@@ -14,83 +5,90 @@ function init() {
   loadTasks();
   renderTasks();
 
-  document.getElementById('addBtn').addEventListener('click', addTask);
-  document.getElementById('taskInput').addEventListener('keypress', function(e) {
+  document.getElementById('addBtn').onclick = addTask;
+
+  document.getElementById('taskInput').onkeypress = function(e) {
     if (e.key === 'Enter') addTask();
-  });
+  };
 
-  document.getElementById('clearDone').addEventListener('click', clearDone);
+  document.getElementById('clearDone').onclick = clearDone;
 
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.onclick = function() {
       currentFilter = this.getAttribute('data-filter');
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(function(b) {
+        b.classList.remove('active');
+      });
       this.classList.add('active');
       renderTasks();
-    });
+    };
   });
 }
 
 function addTask() {
-  const input = document.getElementById('taskInput');
-  const text = input.value.trim();
+  var input = document.getElementById('taskInput');
+  var text = input.value.trim();
   if (!text) return;
-
-  const task = {
-    id: Date.now(),
-    text: text,
-    done: false
-  };
-
-  tasks.push(task);
+  tasks.push({ id: Date.now(), text: text, done: false });
   saveTasks();
   renderTasks();
   input.value = '';
 }
 
 function toggleTask(id) {
-  tasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+  for (var i = 0; i < tasks.length; i++) {
+    if (tasks[i].id === id) {
+      tasks[i].done = !tasks[i].done;
+      break;
+    }
+  }
   saveTasks();
   renderTasks();
 }
 
 function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
+  tasks = tasks.filter(function(t) { return t.id !== id; });
   saveTasks();
   renderTasks();
 }
 
 function clearDone() {
-  tasks = tasks.filter(t => !t.done);
+  tasks = tasks.filter(function(t) { return !t.done; });
   saveTasks();
   renderTasks();
 }
 
 function renderTasks() {
-  const list = document.getElementById('taskList');
+  var list = document.getElementById('taskList');
   list.innerHTML = '';
 
-  let filtered = tasks;
-  if (currentFilter === 'active') filtered = tasks.filter(t => !t.done);
-  if (currentFilter === 'done')   filtered = tasks.filter(t => t.done);
+  var filtered = tasks;
+  if (currentFilter === 'active') filtered = tasks.filter(function(t) { return !t.done; });
+  if (currentFilter === 'done')   filtered = tasks.filter(function(t) { return t.done; });
 
-  filtered.forEach(task => {
-    const li = document.createElement('li');
+  filtered.forEach(function(task) {
+    var li = document.createElement('li');
     li.className = task.done ? 'done' : '';
 
-    const checkBtn = document.createElement('button');
-    checkBtn.className = 'check-btn' + (task.done ? ' checked' : '');
+    var checkBtn = document.createElement('button');
+    checkBtn.className = task.done ? 'check-btn checked' : 'check-btn';
     checkBtn.textContent = task.done ? '✓' : '';
-    checkBtn.addEventListener('click', () => toggleTask(task.id));
+    checkBtn.type = 'button';
+    (function(id) {
+      checkBtn.onclick = function() { toggleTask(id); };
+    })(task.id);
 
-    const span = document.createElement('span');
+    var span = document.createElement('span');
     span.className = 'task-text';
     span.textContent = task.text;
 
-    const delBtn = document.createElement('button');
+    var delBtn = document.createElement('button');
     delBtn.className = 'delete-btn';
-    delBtn.textContent = '🗑';
-    delBtn.addEventListener('click', () => deleteTask(task.id));
+    delBtn.textContent = '';
+    delBtn.type = 'button';
+    (function(id) {
+      delBtn.onclick = function() { deleteTask(id); };
+    })(task.id);
 
     li.appendChild(checkBtn);
     li.appendChild(span);
@@ -98,17 +96,25 @@ function renderTasks() {
     list.appendChild(li);
   });
 
-  // Compteur
-  const remaining = tasks.filter(t => !t.done).length;
+  var remaining = tasks.filter(function(t) { return !t.done; }).length;
   document.getElementById('counter').textContent = remaining + ' tâche(s) restante(s)';
 }
 
-// Sauvegarde dans localStorage (fonctionne sur Android avec Cordova)
 function saveTasks() {
-  localStorage.setItem('sentasks', JSON.stringify(tasks));
+  try {
+    localStorage.setItem('todolist', JSON.stringify(tasks));
+  } catch(e) {}
 }
 
 function loadTasks() {
-  const saved = localStorage.getItem('sentasks');
-  if (saved) tasks = JSON.parse(saved);
+  try {
+    var saved = localStorage.getItem('todolist');
+    if (saved) tasks = JSON.parse(saved);
+  } catch(e) {}
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
 }

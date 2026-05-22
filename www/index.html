@@ -2,39 +2,31 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SenTasks - Todo List</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>Todo List</title>
+  <link rel="stylesheet" href="css/index.css" />
 </head>
 <body>
-
   <div class="container">
     <h1> Todo List</h1>
 
-    <!-- Formulaire d'ajout -->
     <div class="input-section">
       <input type="text" id="taskInput" placeholder="Nouvelle tâche..." />
-      <button id="addBtn">Ajouter</button>
+      <button id="addBtn" type="button">Ajouter</button>
     </div>
 
-    <!-- Filtres -->
     <div class="filters">
-      <button class="filter-btn active" data-filter="all">Toutes</button>
-      <button class="filter-btn" data-filter="active">Actives</button>
-      <button class="filter-btn" data-filter="done">Terminées</button>
+      <button class="filter-btn active" type="button" data-filter="all">Toutes</button>
+      <button class="filter-btn" type="button" data-filter="active">Actives</button>
+      <button class="filter-btn" type="button" data-filter="done">Terminées</button>
     </div>
 
-    <!-- Compteur -->
     <p id="counter">0 tâche(s) restante(s)</p>
-
-    <!-- Liste des tâches -->
     <ul id="taskList"></ul>
-
-    <!-- Bouton vider terminées -->
-    <button id="clearDone">🗑 Supprimer les terminées</button>
+    <button id="clearDone" type="button"> Supprimer les terminées</button>
   </div>
 
+  <script src="js/index.js"></script>
   <script src="cordova.js"></script>
-  <script src="js/app.js"></script>
 </body>
 </html>
